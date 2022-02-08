@@ -16,6 +16,7 @@ try {
     .then(({ data: { files } }, err) => {
       if (err) throw new Error(err);
       if (Array.isArray(files)) {
+        console.log(files);
         const modifiedPaths = files.map(f => f.filename);
         if(!returnFiles) {
           const modified = paths.some(p => minimatch.match(modifiedPaths, p).length);
