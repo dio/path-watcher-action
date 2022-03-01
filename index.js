@@ -14,7 +14,7 @@ const minimatch = require('minimatch');
   const ref = github.context.payload.head_commit ?
     github.context.payload.head_commit.id : (SHA || github.context.payload.after);
 
-  core.info(SHA)
+  core.info(SHA);
   core.info(JSON.stringify(github.context.payload, null, 2));
 
   if (!ref) {
@@ -26,14 +26,16 @@ const minimatch = require('minimatch');
   const [owner, repo] = github.context.payload.repository.full_name.split('/');
   const { data: { files }, err } = await octokit.repos.getCommit({ owner, repo, ref });
   if (err) {
-    core.error(err);
+    core.info(err);
     core.setOutput('modified', true);
     return;
   }
 
   if (Array.isArray(files)) {
+    core.info("we have files!");
     const modifiedPaths = files.map(f => f.filename);
     if (!returnFiles) {
+      core.info("we are fine!");
       const modified = paths.some(p => minimatch.match(modifiedPaths, p).length);
       core.setOutput('modified', modified);
       return;
