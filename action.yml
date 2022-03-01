@@ -3,6 +3,8 @@ description: 'check whether the head commit involved a change in one of the inpu
 inputs:
   github_token:
     description: 'github token'
+  github_sha:
+    description: 'current SHA'
   paths:
     description: 'comma separated list of paths'
     required: true

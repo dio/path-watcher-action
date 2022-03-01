@@ -7,12 +7,14 @@ const minimatch = require('minimatch');
   const ghToken = core.getInput('github_token');
   const octokit = new Octokit(ghToken ? { auth: ghToken } : {});
   const paths = core.getInput('paths').split(',');
+  const SHA = core.getInput('github_sha');
 
   const returnFiles = core.getInput('return_files') === 'true';
   // When using pull_request, the context payload.head_commit is undefined. But we have after instead.
   const ref = github.context.payload.head_commit ?
-    github.context.payload.head_commit.id : github.context.payload.after;
+    github.context.payload.head_commit.id : (SHA || github.context.payload.after);
 
+  core.info(SHA)
   core.info(JSON.stringify(github.context.payload, null, 2));
 
   if (!ref) {
