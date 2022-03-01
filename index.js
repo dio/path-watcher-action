@@ -14,14 +14,13 @@ const minimatch = require('minimatch');
   const ref = github.context.payload.head_commit ?
     github.context.payload.head_commit.id : (SHA || github.context.payload.after);
 
-  core.info(SHA);
-  core.info(JSON.stringify(github.context.payload, null, 2));
-
   if (!ref) {
     core.info('missing ref!');
     core.setOutput('modified', true);
     return;
   }
+
+  core.info(`ref: ${ref}`);
 
   const [owner, repo] = github.context.payload.repository.full_name.split('/');
   const { data: { files }, err } = await octokit.repos.getCommit({ owner, repo, ref });
@@ -32,11 +31,11 @@ const minimatch = require('minimatch');
   }
 
   if (Array.isArray(files)) {
-    core.info("we have files!");
+    core.info(`go files ${files.length}`);
     const modifiedPaths = files.map(f => f.filename);
     if (!returnFiles) {
-      core.info("we are fine!");
       const modified = paths.some(p => minimatch.match(modifiedPaths, p).length);
+      core.info(`verdict: ${modified}`);
       core.setOutput('modified', modified);
       return;
     }
@@ -46,5 +45,6 @@ const minimatch = require('minimatch');
     return;
   }
 
+  core.info('no relevant modified files');
   core.setOutput('modified', false);
 })();
